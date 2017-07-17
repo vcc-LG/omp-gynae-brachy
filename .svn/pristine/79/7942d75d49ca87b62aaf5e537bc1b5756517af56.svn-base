@@ -1,0 +1,46 @@
+{% extends 'myapp/base.html' %}
+
+
+{% block content %}
+<div class="jumbotron">
+    <h1>Plan details</h1>
+</div>
+
+<table class="table table-bordered table-hover">
+  <tr>
+    <td><h4>Patient ID:</h4></td>
+    <td><h4>{{ patient_ID }}</h4></td>
+  </tr>
+  <tr>
+    <td><h4>Patient name:</h4></td>
+    <td><h4>{{ patient_name }}</h4></td>
+  </tr>
+  <tr>
+    <td><h4>Case label:</h4></td>
+    <td><h4>{{ case_label }}</h4></td>
+  </tr>
+  <tr>
+    <td><h4>Plan name:</h4></td>
+    <td><h4>{{ plan_name }}</h4></td>
+  </tr>
+  <tr>
+    <td><h4>Applicator setup type:</h4></td>
+    <td><h4>{{ applicator_setup }}</h4></td>
+  </tr>
+  <tr>
+    <td><h4>Applicator:</h4></td>
+    <td><h4>{{ applicator }}</h4></td>
+  </tr>
+  </table>
+
+  <hr />
+  <span class="pull-right button-group">
+    <a href='/view_protocol/{{patient_ID}}/{{case_label}}/{{ plan_name }}' class="btn btn-info" target="_blank"><span class="glyphicon glyphicon-pencil"></span> Create protocol</a>
+
+    <a href='/dose_check/{{patient_ID}}/{{case_label}}/{{ plan_name }}' class="btn btn-warning" target="_blank"><span class="glyphicon glyphicon-check"></span> Dose check</a>
+
+</span>
+
+  <a href='/view_case/{{patient_ID}}/{{case_label}}' class="btn btn-default" role="button"><span class="glyphicon glyphicon-step-backward"></span>Back</a>
+
+{% endblock %}

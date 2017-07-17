@@ -1,0 +1,166 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap-responsive.css" rel="stylesheet" media="screen">
+{% load static %}
+<style type="text/css">
+  .table-condensed>thead>tr>th, .table-condensed>tbody>tr>th, .table-condensed>tfoot>tr>th, .table-condensed>thead>tr>td, .table-condensed>tbody>tr>td, .table-condensed>tfoot>tr>td {
+padding: 1px;
+}
+.table-small-font{
+  font-size: 15px;
+}
+</style>
+
+<link rel="stylesheet" type="text/css" href="{% static 'myapp/print_style.css' %}" />
+
+    <h3>MicroSelectron Radiographer Protocol</h3>
+<hr/>
+
+<table class="table table-bordered table-condensed">
+  <tr>
+    <td class="col-sm-2"><h5>Patient ID:</h5></td>
+    <td><h5>&#160; {{ plan.patient_ID }}</h5></td>
+  </tr>
+  <tr>
+    <td class="col-sm-2"><h5>Patient name:</h5></td>
+    <td><h5>&#160; {{ patient_name }}</h5></td>
+  </tr>
+  <tr>
+    <td class="col-sm-3"><h5>Case label:</h5></td>
+    <td><h5>&#160; {{ case_label }}</h5></td>
+  </tr>
+  <tr>
+    <td class="col-sm-3"><h5>Plan name:</h5></td>
+    <td><h5>&#160; {{ plan.plan_name }}</h5></td>
+  </tr>
+  <tr>
+    <td class="col-sm-3"><h5>Applicator setup type:</h5></td>
+    <td><h5>&#160; {{ plan.applicator_setup_type }}</h5></td>
+  </tr>
+  <tr>
+    <td class="col-sm-3"><h5>Applicator:</h5></td>
+    <td><h5>&#160; {{ plan.applicator }}</h5></td>
+  </tr>
+  <tr>
+    <td class="col-sm-3"><h5>Apparent activity (Ci):</h5></td>
+    <td><h5>&#160; {{ plan.apparent_activity }}</h5></td>
+  </tr>
+  <tr>
+    <td class="col-sm-3"><h5>Prescription dose (Gy):</h5></td>
+    <td><h5>&#160; {{ plan.prescription }}</h5></td>
+  </tr>
+  </table>
+  <hr/>
+
+  <h4>Plan approval</h4>
+  <table class="table table-bordered table-condensed">
+      <td class="col-sm-2"><h5>Insertion #:</h5></td>
+      <td width="100"></td>
+      <td width="100">           </td>
+      <td width="100">           </td>
+    </tr>
+    <tr>
+      <td class="col-sm-2"><h5>Dose (Gy):</h5></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="col-sm-2"><h5>To:</h5></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="col-sm-2"><h5>Sign:</h5></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="col-sm-2"><h5>Date:</h5></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    </table>
+    <hr/>
+
+{% for channel in plan_data %}
+      <div class="col-xs-6">
+        <div class="table">
+                  <table class="table table-bordered  table-condensed table-small-font">
+                    <tbody>
+                      <tr>
+                        <td class="col-sm-7">Channel:</td>
+                        <td>{{channel.channel_number}}</td>
+                      </tr>
+                      <tr>
+                        <td class="col-sm-7">Channel name:</td>
+                        <td>{{channel.channel_name}}</td>
+                      </tr>
+                      <tr>
+                        <td class="col-sm-7">Reference Length (mm):</td>
+                        <td>{{channel.reference_length}}</td>
+                      </tr>
+                      <tr>
+                        <td class="col-sm-7">Step Size (mm):</td>
+                        <td>{{channel.step_size}}</td>
+                      </tr>
+                       <tr>
+                         <td class="col-sm-7">Dwell Position</td>
+                         <td>Time (s)</td>
+                      </tr>
+                      {% for dwell in channel.dwells %}
+                      <tr>
+                      <td class="col-sm-7">{{dwell.dwell_position}}</td>
+                      <td>{{dwell.dwell_time}}</td>
+                      </tr>
+                      {% endfor %}
+                      <tr>
+                        <td class="col-sm-7">Total channel time (s):</td>
+                        <td>{{channel.channel_time_total}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+      </div>
+{% endfor %}
+
+<table class="table table-bordered table-condensed">
+  <tr>
+    <td class="col-sm-2"></td>
+    <td><h5>Sign:</h5></td>
+    <td><h5>Date:</h5></td>
+  </tr>
+  <tr>
+    <td><h5>Planned by:</h5></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><h5>Checked by:</h5></td>
+    <td></td>
+    <td></td>
+  </tr>
+</table>
+<p id="datestamp"></p>
+<div class="hidden-div" id="hidden-div">
+<button onclick="myFunction()">Print protocol</button>
+</div>
+<script>
+function myFunction() {
+  $("#hidden-div").hide()
+    window.print();
+}
+var mediaQueryList = window.matchMedia('print');
+mediaQueryList.addListener(function(mql) {
+    if (mql.matches) {
+        // console.log('before print dialog open');
+    } else {
+        $("#hidden-div").show()
+    }
+});
+document.getElementById("datestamp").innerHTML = 'Protocol created on '+Date();
+</script>

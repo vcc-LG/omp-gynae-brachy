@@ -1,0 +1,46 @@
+import pyodbc
+
+def connect_to_database():
+    cnxn = pyodbc.connect("Driver={SQL Server};Server=10.69.174.57,53092;Database=Nucletron;Trusted_connection=yes")
+    cur = cnxn.cursor()
+    return cur
+
+def get_patient_IDs_and_names(patient_name):
+    """Return patient names and IDs from search query"""
+    cur = connect_to_database()
+    cur.execute("""SELECT pt.patientID, pt.name FROM [Nucletron].[dbo].[PatientAdmin.Patients] pt WHERE pt.name LIKE '%s' OR pt.name LIKE '%s'""" % ('%' + patient_name + '%','%' + patient_name + '%'))
+    cursor_content = [row for row in cur]
+    patient_IDs = [x[0] for x in cursor_content]
+    patient_names = [x[1] for x in cursor_content]
+    return patient_IDs, patient_names
+
+def get_patient_studies(patient_ID):
+    cur = connect_to_database()
+    cur.execute("""SELECT st.studyID FROM [Nucletron].[dbo].[PatientAdmin.Studies] st INNER JOIN [Nucletron].[dbo].[PatientAdmin.Patients] pt ON st.parentOID = pt.OID WHERE pt.patientID = '%s'""" % patient_ID)
+    cursor_content = [row for row in cur]
+    studies = [i[0] for i in cursor_content]
+    return studies
+
+
+def get_patient_name(patient_ID):
+    """Return patient name from ID"""
+    cur = connect_to_database()
+    cur.execute("""SELECT pt.name FROM [Nucletron].[dbo].[PatientAdmin.Patients] pt WHERE pt.patientID = '%s'""" % patient_ID)
+    cursor_content = [row for row in cur]
+    patient_name = cursor_content[0][0]
+    return patient_name
+
+def get_plans_from_study(patient_ID, study_ID):
+    """Returns list of plans for patient specified ID, case"""
+    cur = connect_to_database()
+    cur.execute("""SELECT basetable.modality, basetable.number, basetable.description FROM [Nucletron].[dbo].[PatientAdmin.BaseSeries] basetable
+                INNER JOIN [Nucletron].[dbo].[PatientAdmin.Series] seriestable ON basetable.parentOID = seriestable.OID
+                INNER JOIN [Nucletron].[dbo].[PatientAdmin.Studies] studytable ON seriestable.parentOID = studytable.OID
+                INNER JOIN [Nucletron].[dbo].[PatientAdmin.Patients] patienttable ON studytable.parentOID = patienttable.OID
+                WHERE basetable.modality = 'RTPLAN' AND patienttable.patientID = '%s' AND studytable.studyID = '%s'
+                ORDER BY basetable.number DESC """ % (patient_ID, study_ID))
+    cursor_content = [row for row in cur]
+    plans = []
+    for row in cursor_content:
+        plans.append(' '.join([str(i) for i in list(row)]))
+    return plans, cursor_content

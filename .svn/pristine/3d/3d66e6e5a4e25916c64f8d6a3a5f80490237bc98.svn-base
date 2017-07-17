@@ -1,0 +1,121 @@
+{% extends 'myapp/base.html' %}
+
+{% load mathfilters %}
+<style type="text/css">
+  .table-condensed>thead>tr>th, .table-condensed>tbody>tr>th, .table-condensed>tfoot>tr>th, .table-condensed>thead>tr>td, .table-condensed>tbody>tr>td, .table-condensed>tfoot>tr>td {
+padding: 1px;
+}
+.table-small-font{
+  font-size: 15px;
+}
+</style>
+
+
+{% block content %}
+<link rel="stylesheet" href="https://dbushell.com/Pikaday/css/pikaday.css">
+
+<script src="https://dbushell.com/Pikaday/pikaday.js"></script>
+
+    <h1>HDR Brachytherapy TG43 dose check</h1>
+
+<table class="table table-bordered table-condensed">
+  <tr>
+    <td><h4>Patient ID:</h4></td>
+    <td><h4>{{ patient_ID }}</h4></td>
+  </tr>
+  <tr>
+    <td><h4>Case label:</h4></td>
+    <td><h4>{{ case_label }}</h4></td>
+  </tr>
+  <tr>
+    <td><h4>Plan name:</h4></td>
+    <td><h4>{{ plan_name }}</h4></td>
+  </tr>
+</table>
+
+<h1>Results</h1>
+
+<table class="table table-bordered table-condensed">
+<tr>
+<td></td>
+<th colspan="3">Co-ordinates (cm)</th>
+<th colspan="3">Dose (Gy)</th>
+</tr>
+<tr>
+  <th>Dose point</th>
+<th>x</th>
+<th>y</th>
+<th>z</th>
+<th>pyTG43</th>
+<th>OMP</th>
+<th>% difference</th>
+</tr>
+
+{% for point in calc_data %}
+
+<tr>
+<th>{{ point.poi_name }}</th>
+<td>{{ point.x_coord }}</td>
+<td>{{ point.y_coord }}</td>
+<td>{{ point.z_coord }}</td>
+<td>{{ point.pyTG43_dose }}</td>
+<td>{{ point.OMP_dose }}</td>
+{% if point.perc_difference|abs > 5 %}
+<td><font color="red">{{ point.perc_difference }}</font></td>
+{% else %}
+<td>{{ point.perc_difference }}</td>
+{% endif %}
+</tr>
+
+{% endfor %}
+</table>
+
+<table class="table table-bordered table-condensed">
+  <tr>
+    <td class="col-sm-2"></td>
+    <td><h5>Sign:</h5></td>
+    <td><h5>Date:</h5></td>
+  </tr>
+  <tr>
+    <td><h5>Physics checker:</h5></td>
+    <td>  <input type="text" class="form-control" name="checker_name" value=""></td>
+    <td>      <input type="text" class="form-control" id="datepicker"> </td>
+  </tr>
+</table>
+<p id="datestamp"></p>
+
+<script>
+$(document).ready(function(){
+    $(".navbar").remove();
+});
+</script>
+
+<div class="hidden-div" id="hidden-div">
+<button onclick="myFunction()">Save dose check</button>
+</div>
+<script>
+function myFunction() {
+  $("#hidden-div").hide()
+    window.print();
+}
+var mediaQueryList = window.matchMedia('print');
+mediaQueryList.addListener(function(mql) {
+    if (mql.matches) {
+        // console.log('before print dialog open');
+    } else {
+        $("#hidden-div").show()
+    }
+});
+document.getElementById("datestamp").innerHTML = 'Dose check created on '+Date();
+</script>
+   <script>
+
+var picker = new Pikaday(
+{
+    field: document.getElementById('datepicker'),
+    firstDay: 1,
+    yearRange: [2000,2020]
+});
+
+</script>
+{% endblock %}

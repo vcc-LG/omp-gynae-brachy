@@ -1,0 +1,25 @@
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+<div class="jumbotron">
+    <h1>Choose a study</h1>
+</div>
+
+  <h2>Patient ID: {{ patient_ID }}</h2>
+  <h2>Patient name: {{ patient_name }}</h2>
+
+  <hr />
+{% for case in cases %}
+
+ <div class="list-group">
+   <a href='../../view_case/{{ patient_ID }}/{{ case }}' class="btn btn-default btn-block" role="button">
+         Study name:
+         {{ case }}
+   </a>
+ </div>
+
+ {% endfor %}
+
+ <a href='/' class="btn btn-default" role="button"><span class="glyphicon glyphicon-step-backward"></span>Back</a>
+
+{% endblock %}

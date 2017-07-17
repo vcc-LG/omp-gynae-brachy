@@ -1,0 +1,24 @@
+{% extends 'myapp/base.html' %}
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="error-template">
+                <h1>
+                    Oops!</h1>
+                <h2>
+                    Patient Not Found</h2>
+                <div class="error-details">
+                    Sorry, that patient couldn't be found
+                </div>
+<div class="col-xs-12" style="height:50px;"></div>
+                <div class="error-actions">
+                    <a href="/" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-home"></span>
+                        Home </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

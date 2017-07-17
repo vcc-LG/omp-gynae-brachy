@@ -1,0 +1,7 @@
+pydicom==0.9.9
+Django==1.9.11
+lmfit==0.9.5
+numpy==1.11.2
+pyodbc==3.0.10
+scipy==0.18.1
+dicom==0.9.9.post1
